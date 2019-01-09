@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?><gpx version="1.0" creator="GPSLogger 99 - http://gpslogger.mendhak.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd"><time>2019-01-09T09:55:25.989Z</time><trk><trkseg><trkpt lat="51.1191679" lon="17.0899432"><ele>168.0</ele><time>2019-01-09T09:55:25.989Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191647" lon="17.0899383"><ele>168.0</ele><time>2019-01-09T09:56:46.167Z</time><src>network</src></trkpt>
+<trkpt lat="51.119352619219185" lon="17.090394522838864"><ele>298.0230174457991</ele><time>2019-01-09T09:57:55.004Z</time><speed>2.218205</speed><geoidheight>41.9</geoidheight><src>gps</src><sat>5</sat><hdop>5.1</hdop><vdop>4.8</vdop><pdop>7.0</pdop></trkpt>
+<trkpt lat="51.1191696" lon="17.08994"><ele>0.0</ele><time>2019-01-09T09:59:03.259Z</time><speed>0.0</speed><geoidheight>41.9</geoidheight><src>gps</src><sat>5</sat><hdop>99.0</hdop><vdop>99.0</vdop><pdop>140.0</pdop></trkpt>
+<trkpt lat="51.1191577" lon="17.0899318"><ele>168.0</ele><time>2019-01-09T10:00:42.084Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191633" lon="17.089937"><ele>168.0</ele><time>2019-01-09T10:01:42.938Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191657" lon="17.0899387"><ele>168.0</ele><time>2019-01-09T10:02:43.738Z</time><src>network</src></trkpt>
+<trkpt lat="51.119308816734126" lon="17.090285034552622"><ele>233.67973853078095</ele><time>2019-01-09T10:05:22.816Z</time><speed>0.9063222</speed><geoidheight>41.9</geoidheight><src>gps</src><sat>5</sat><hdop>1.5</hdop><vdop>2.1</vdop><pdop>2.6</pdop></trkpt>
+<trkpt lat="51.1191659" lon="17.0899404"><ele>168.0</ele><time>2019-01-09T10:07:02.636Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191684" lon="17.0899402"><ele>168.0</ele><time>2019-01-09T10:08:46.833Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191622" lon="17.0899364"><ele>168.0</ele><time>2019-01-09T10:09:47.708Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191645" lon="17.0899363"><ele>168.0</ele><time>2019-01-09T10:10:48.523Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191647" lon="17.0899356"><ele>168.0</ele><time>2019-01-09T10:11:49.347Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191639" lon="17.0899373"><ele>168.0</ele><time>2019-01-09T10:12:50.214Z</time><src>network</src></trkpt>
+<trkpt lat="51.1191597" lon="17.0899502"><ele>168.0</ele><time>2019-01-09T10:14:10.338Z</time><src>network</src></trkpt>
+</trkseg></trk></gpx>

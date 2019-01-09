@@ -1,0 +1,2 @@
+"lat" "lon" "geoidheight" "date" "time" "uS/h"
+0.1 0.1 0.1 yyyy-MM-dd HH:mm:ss.fff 0.1

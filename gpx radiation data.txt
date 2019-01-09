@@ -1,0 +1,5 @@
+<xsd:complexType name="Radiation average from minute">
+<xsd:sequence>
+<xsd:any namespace="##other" processContents="uS/h" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence>
+</xsd:complexType>
