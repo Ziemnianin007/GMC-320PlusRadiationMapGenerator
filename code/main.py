@@ -1,5 +1,6 @@
 import sys
 import PySide2
+from PySide2 import QtXml
 from form import Form
 from PySide2.QtWidgets import QApplication
 
