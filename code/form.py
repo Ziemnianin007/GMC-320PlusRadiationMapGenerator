@@ -6,11 +6,10 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QListView, QFileDialog, QMainWindow, QLabel
 from PySide2.QtCore import QFile, QObject, QStringListModel, QModelIndex
 from PySide2.QtGui import QCloseEvent
-import tkinter as tk
-from tkinter import filedialog
 import time
 import datetime
-from scanf import scanf
+from dataConverter import dataConverter
+import fileOperation
 
 class Form(QObject):
 
@@ -31,6 +30,12 @@ class Form(QObject):
         self.gpsStatus = self.window.findChild(QLabel, 'gpsStatus')
         self.generateStatus = self.window.findChild(QLabel, 'generateStatus')
 
+        self.gpsDateStatus = self.window.findChild(QLabel, 'GPSDate')
+        self.radiationDateStatus = self.window.findChild(QLabel, 'radiationDate')
+        self.intersectionDateStatus = self.window.findChild(QLabel, 'intersectionDate')
+
+        self.timeZone = self.window.findChild(QLineEdit, 'timeZone')
+
         # button action
         btn = self.window.findChild(QPushButton, 'radiationData')
         btn.clicked.connect(self.radiationData)
@@ -48,73 +53,18 @@ class Form(QObject):
         self.window.show()
 
     def radiationData(self):
-        path = self.openDialogFunction('.csv')
-        print("Loading radiation data from: " + str(path.name))
-        file = open(path.name)
-
-        #checking header
-        header = file.readline()
-        if not header.__contains__("GMC Data Viewer"):
-            print("INCORRECT DATA FILE HEADER, should contain \'GMC Data Viewer\'")
-            self.radiationStatus.setText('Wrong header, aborted')
-            file.close()
-            return
-        else:
-            print("Correct header")
-        self.radiationDataList = []
-
-        #searching end of file
-        file.seek(0, 2)  # Jumps to the end
-        endOfFile = file.tell()  # Give you the end location (characters from start)
-        print("file have: " + str(endOfFile) + " character")
-        file.seek(0)  # Jump to the beginning of the file again
-
-        #skipping lines, seek seems work randomly here
-        file.readline()
-        file.readline()
-        file.readline()
-
-        #loading data
-        while file.tell() != endOfFile:
-            line = file.readline()
-            self.radiationDataList.append(line)
-        print('Radiation data loaded')
-        print("First data line: " + self.radiationDataList[0])
-        print("Last data line: " + self.radiationDataList[-1])
-        self.radiationStatus.setText('Radiation data loaded, contains: ' + str(len(self.radiationDataList)) + " lines")
+        path = fileOperation.openDialogFunction('.csv')
+        radiationDataConverter = dataConverter()
+        converted = radiationDataConverter.radiationDataLoad(path)
+        self.radiationStatus.setText(converted[1])
+        self.radiationDataList = converted[0]
 
     def gpsData(self):
-        path = self.openDialogFunction('.gpx')
-        print("Loading gps data from: " + str(path.name))
-        file = open(path.name)
-
-        #checking header
-        header = file.readline()
-        if not header.__contains__("GPSLogger"):
-            print("INCORRECT DATA FILE HEADER, should contain \'GPSLogger\'")
-            self.gpsStatus.setText('Wrong header, aborted')
-            file.close()
-            return
-        else:
-            print("Correct header")
-        self.gpsDataList = []
-
-        #searching end of file
-        file.seek(0, 2)  # Jumps to the end
-        endOfFile = file.tell()  # Give you the end location (characters from start)
-        print("file have: " + str(endOfFile) + " character")
-        file.seek(0)  # Jump to the beginning of the file again
-
-        #loading data
-        while file.tell() != endOfFile:
-            line = file.readline()
-            if (line.__contains__('<trkpt ')):
-                begin = line.find('<trkpt ')
-                self.gpsDataList.append(line[begin:-1])
-        print('GPS data loaded')
-        print("First data line: " + self.gpsDataList[0])
-        print("Last data line: " + self.gpsDataList[-1])
-        self.gpsStatus.setText('GPS data loaded, contains: ' + str(len(self.gpsDataList)) + " lines")
+        path = fileOperation.openDialogFunction('.gpx')
+        gpsDataConverter = dataConverter()
+        converted = gpsDataConverter.gpsDataLoad(path)
+        self.gpsStatus.setText(converted[1])
+        self.gpsDataList = converted[0]
 
     def generate(self):
         if(self.gpsDataList is None):
@@ -125,102 +75,28 @@ class Form(QObject):
             print('Load radiation data')
             self.generateStatus.setText("First load radiation data")
             return
-        #gets lat, lon, day, time, geoidheight
-        self.gpsDataList
-        geoidheight = None
-        for line in self.gpsDataList:
-            sLine = line.split(' ')
-            lat = None
-            lon = None
-            date = None
-            time = None
-            uS = None
-            lat = scanf('lat="%f"', sLine[1])[0]
-            lon = scanf('lon="%f">%s', sLine[2])[0]
-            date = scanf('%s><ele>%f</ele><time>%sT%s', sLine[2])[2]
-            time = scanf('%s><ele>%f</ele><time>%sT%sZ%s', sLine[2])[3]
-            if (sLine[2].__contains__('<geoidheight>')):
-                geoidheight = scanf('%s<geoidheight>%f</geoidheight>%s', sLine[2])[1]
-            else:
-                if(geoidheight is None):
-                    geoidheight = 0.0
-            uS = None
-            lLine = (lat,lon,geoidheight,date,time, uS)
-            self.generatedData.append(lLine)
+        self.generatedData = None
 
-        #adding radiation to right time
-        self.radiationDataList
-        
-
-        self.generatedData
+        timeZone = int(self.timeZone.text())
+        mergeGeneratedData = dataConverter()
+        allData = mergeGeneratedData.mergeRadiationWithGps(self.gpsDataList, self.radiationDataList, timeZone)
+        self.generatedData = allData[0]
+        #return gpsDataList, gpsDateRange, radiationDateRange, intersectionRange
+        self.gpsDateStatus.setText(allData[1])
+        self.radiationDateStatus.setText(allData[2])
+        self.intersectionDateStatus.setText(allData[3])
         #saving data
         if(self.generatedData is not None):
             print('Saving data')
-            path = self.file_save_window()
-            self.file_save_path(path, self.generatedData, 'csv', '.csv')
+            # return gpsDataList, gpsMin ,gpsMax ,radMin ,radMax ,intersection[0], intersection[1]
+            path = fileOperation.fileSaveWindow()
+            fileOperation.fileSavePath(path, self.generatedData, '.csv')
             print('Saved properly')
             self.generateStatus.setText('Radiation files saved to ' + path)
         else:
             print('Files dont match, check dates')
             self.generateStatus.setText('Files dont match, check dates')
 
-    def openDialogFunction(self, extension):
-        print("Open dialog function")
-        root = tk.Tk()
-        root.withdraw()
 
-        title = "Open file",
-        fileName = 'name',
-        dirName = None,
-        fileExt = extension,
-        asFile = False
-        fileTypes = [('text files', extension), ('all files', '.*')]
-        # define options for opening
-        options = {}
-        options['defaultextension'] = fileExt
-        options['filetypes'] = fileTypes
-        options['initialdir'] = dirName
-        options['initialfile'] = fileName
-        options['title'] = title
-
-        file_path = filedialog.askopenfile(mode='r', **options)
-        if file_path is None:  # asksaveasfile return `None` if dialog closed with "cancel".
-            print("No file selected")
-            return
-        return file_path
-
-    def fileSaveWindow(self):
-        print("Save dialog function")
-        root = tk.Tk()
-        root.withdraw()
-
-        current_time = time.localtime()
-        title = "Save radiation data",
-        fileName = "RadiationData" + str(current_time[2])+str(current_time[1])+str(current_time[0])+"_"+str(current_time[3])+str(current_time[4])+str(current_time[5]),
-        dirName = None,
-        fileExt = ".csv",
-        asFile = False
-        fileTypes = [('text files', '.csv'), ('all files', '.*')]
-        # define options for opening
-        options = {}
-        options['defaultextension'] = fileExt
-        options['filetypes'] = fileTypes
-        options['initialdir'] = dirName
-        options['initialfile'] = fileName
-        options['title'] = title
-
-        file_path = filedialog.asksaveasfile(mode='w', **options)
-        if file_path is None:  # asksaveasfile return `None` if dialog closed with "cancel".
-            print("No file selected")
-            return
-        file_path.close()
-        return str(file_path.name)
-
-
-    def file_save_path(self, path, toSave, name, format):
-        path_ok = str(path)[:-4] + '_' + str(name) + format
-        file_path = open(path_ok, "w+")
-        file_path.writelines('\n'.join(toSave))
-        file_path.close()  # `()` was missing.
 
 
