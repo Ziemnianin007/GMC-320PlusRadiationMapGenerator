@@ -265,7 +265,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>V0.1, Author: Jakub Aniulis</string>
+       <string>V0.2, Author: Jakub Aniulis</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
