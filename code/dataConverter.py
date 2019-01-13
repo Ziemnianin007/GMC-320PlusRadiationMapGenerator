@@ -114,12 +114,12 @@ class dataConverter():
                         else:
                             # gps data in search range
                             #print('gps data in search range, uS added')
-                            line[5] = format(radiationDataList[indexRadiation][4] * 6.49956E-09, '.15f')  #uS
+                            line[5] = format(radiationDataList[indexRadiation][4], '.15f')  #uS
                             #print('uS: '+ str(line[5])+' GPS: ', line[3], ' ', line[4], ' ', line[6], 'Radiation: ',radiationDataList[indexRadiation][1], ' ', radiationDataList[indexRadiation][2], ' ',radiationDataList[indexRadiation][0])
                             break
                     else:
                         # too much time between dates
-                        if(indexRadiation < len(radiationDataList)):
+                        if(indexRadiation < len(radiationDataList)-1):
                             #print('gps later than radiation data, too much time between dates')
                             indexRadiation += 1
                         else:
@@ -155,8 +155,8 @@ class dataConverter():
             timeAbsolute = None
             lat = scanf('lat="%f"', sLine[1])[0]
             lon = scanf('lon="%f">%s', sLine[2])[0]
-            dateL = scanf('%s><ele>%f</ele><time>%sT%s', sLine[2])[2]
-            timeL = scanf('%s><ele>%f</ele><time>%sT%sZ%s', sLine[2])[3]
+            dateL = scanf('%s<time>%sT%s', sLine[2])[1]
+            timeL = scanf('%s<time>%sT%sZ%s', sLine[2])[2]
             if (sLine[2].__contains__('<geoidheight>')):
                 geoidheight = scanf('%s<geoidheight>%f</geoidheight>%s', sLine[2])[1]
             else:
@@ -185,7 +185,11 @@ class dataConverter():
             timeS = scanf('%d:%d', datatimeSplitted[1])
             timeL = datetime.datetime(dateS[0], dateS[1], dateS[2], timeS[0], timeS[1], 30, 0)
             timeAbsolute = time.mktime(timeL.timetuple())
-            uS = int(splittedLine[2])
+            uS = str(splittedLine[2])
+            if('.' in uS):
+                uS = float(uS)
+            else:
+                uS =  int(uS) * 6.49956E-09
             howOften = splittedLine[1]
             lLine = [timeAbsolute, dateS, timeS, howOften, uS, splittedLine[3:]]
             generatedData.append(lLine)
