@@ -114,7 +114,7 @@ class dataConverter():
                         else:
                             # gps data in search range
                             #print('gps data in search range, uS added')
-                            line[5] = format(radiationDataList[indexRadiation][4], '.15f')  #uS
+                            line[5] = format(radiationDataList[indexRadiation][4], '.8f')  #uS
                             #print('uS: '+ str(line[5])+' GPS: ', line[3], ' ', line[4], ' ', line[6], 'Radiation: ',radiationDataList[indexRadiation][1], ' ', radiationDataList[indexRadiation][2], ' ',radiationDataList[indexRadiation][0])
                             break
                     else:
@@ -189,7 +189,7 @@ class dataConverter():
             if('.' in uS):
                 uS = float(uS)
             else:
-                uS =  int(uS) * 6.49956E-09
+                uS =  int(uS) * 6.49956E-09 * 1000000
             howOften = splittedLine[1]
             lLine = [timeAbsolute, dateS, timeS, howOften, uS, splittedLine[3:]]
             generatedData.append(lLine)
